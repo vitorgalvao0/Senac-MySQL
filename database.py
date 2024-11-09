@@ -1,4 +1,5 @@
 import mysql.connector
+import tkinter as tk
 
 def conexao_banco():
     try:
@@ -19,11 +20,15 @@ def buscarTodos(table):
     try:
         conexao = conexao_banco()
         cursor = conexao.cursor()
-        query = "SELECT * FROM {}".format(table)
+        query = "SELECT id,nome,endereco FROM {}".format(table)
         cursor.execute(query)
         registros = cursor.fetchall()
 
         print(registros)
+
+        return registros
+
+        # descricao = "\n".join(registro[0] for registro in registros)
 
     except:
         print('Não foi possivel selecionar todo o banco!')
@@ -32,7 +37,7 @@ def buscarTodos(table):
         cursor.close()
 
 
-def buscarClienteNome(nome):
+def buscarClienteNome(tree, nome):
     try:
         conexao = conexao_banco()
         cursor = conexao.cursor()
@@ -40,7 +45,11 @@ def buscarClienteNome(nome):
         cursor.execute(query)
         resposta = cursor.fetchall()
 
-        print(resposta)
+
+        for registro in registro:
+            tree.insert("",tk.END, values=registro)
+
+        return resposta
 
     except:
         print("Não encontrei esse registro")
