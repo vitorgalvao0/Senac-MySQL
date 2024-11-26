@@ -1,5 +1,7 @@
 import mysql.connector
 import tkinter as tk
+from tkinter import ttk, messagebox
+import ui
 
 def conexao_banco():
     try:
@@ -37,17 +39,18 @@ def buscarTodos(table):
         cursor.close()
 
 
-def buscarClienteNome(tree, nome):
+def buscarClienteNome(nome):
+
     try:
         conexao = conexao_banco()
         cursor = conexao.cursor()
         query = "SELECT * FROM cliente WHERE nome LIKE '%{}%'".format(nome)
         cursor.execute(query)
-        resposta = cursor.fetchall()
+        registros = cursor.fetchall()
 
-
-        for registro in registro:
-            tree.insert("",tk.END, values=registro)
+        resposta = []
+        for row in registros:
+            resposta = [{"id":row[0],"nome":row[1],"endereco":row[2],"telefone":row[3],"email":row[4],}]
 
         return resposta
 
@@ -56,3 +59,84 @@ def buscarClienteNome(tree, nome):
 
     finally:
         cursor.close()
+
+
+def buscarClienteId(idCliente):
+    try:
+        conexao = conexao_banco()
+        cursor = conexao.cursor()
+
+        query = " SELECT * FROM cliente WHERE id = {}".format(idCliente)
+        cursor.execute(query)
+        resultado = cursor.fetchone()
+
+        if resultado:
+            return{
+                "id" : resultado[0],
+                "nome" : resultado[1],
+                "endereco" : resultado[2],
+                "telefone" : resultado[3],
+                "email" : resultado[4]
+            }
+    except:
+        messagebox.showerror("--- ALERTA --- ","Não foi possivel acessar esse registro")
+
+def cadastraCliente(nome,endereco,telefone,email):
+    
+    try:
+        conexao = conexao_banco()
+        cursor = conexao.cursor()
+
+        query = "INSERT INTO cliente(nome,endereco,telefone,email) values (%s, %s, %s, %s)"
+
+        # print(nome)
+        # print(endereco)
+        # print(telefone)
+        # print(email)
+        cursor.execute(query, (nome, endereco, telefone, email))
+
+        
+        conexao.commit()
+
+        messagebox.showwarning("Cadastro", "Cliente cadastrado com sucesso")
+    except:
+        messagebox.showerror("Erro", "Não possivel realizar o cadastro")
+
+
+def excluirProduto(clienteId):
+    try:
+        conexao = conexao_banco()
+        cursor = conexao.cursor()
+
+        query = "DELETE FROM cliente WHERE id = {}".format(clienteId)
+
+        cursor.execute(query)
+        conexao.commit()
+
+        messagebox.showinfo("AVISO", "Registro deletado")
+
+    except:
+        messagebox.showerror("Erro","Nao foi possivel excluir o cliente")
+
+
+def atualizarCliente(clienteId, nome, endereco, telefone, email, novaJanela):
+    try:
+        conexao = conexao_banco()
+        cursor = conexao.cursor()
+
+        query = """ UPDATE cliente 
+        SET nome = '{}', endereco = '{}', telefone = '{}', email = '{}' 
+        WHERE id = '{}' """.format( nome, endereco, telefone, email, clienteId )
+
+        print(query)
+
+        cursor.execute(query)
+        conexao.commit()
+        novaJanela.destroy()
+
+        messagebox.showinfo("AVISO", "Produto atualizado")
+    except:
+        messagebox.showerror("AVISO", "Nao foi possivel atualizar esse cliente")
+
+
+
