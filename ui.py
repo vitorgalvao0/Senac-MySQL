@@ -93,9 +93,6 @@ def listagemRegistro():
     btnDelete = tk.Button(novaJanela,text="Deletar cliente", command=excluirRegistro)
     btnDelete.pack(pady=10)
 
-
-
-
 def janelaCadastraNome():
 
     # Metodo que limpa os campos 
@@ -147,7 +144,6 @@ def janelaCadastraNome():
     # Botão que vai cadastrar o nome e dados no banco de dados
     bntCadastraNome = tk.Button(novaJanela, text="Cadastrar", command=lambda:salvaCliente())
     bntCadastraNome.pack(pady=10)
-
 
 def telaPrincipal():
     root = tk.Tk()
