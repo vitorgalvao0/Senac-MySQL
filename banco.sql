@@ -1,8 +1,10 @@
 create database BANCO;
 use banco;
 
+drop table cliente;
+
 create table cliente (
-  id int primary key,
+  id int primary key auto_increment,
   nome varchar(100),
   endereco varchar(100),
   telefone varchar (100),
@@ -19,6 +21,7 @@ values (1, 'João Silva', 'Rua A, 123', '(11) 91234-5678', 'joao.silva@email.com
 (8, 'Juliana Rocha', 'Travessa H, 505', '(81) 93210-9876', 'juliana.rocha@email.com'),
 (9, 'Carlos Martins', 'Praça I, 606', '(91) 92109-8765', 'carlos.martins@email.com'),
 (10, 'Fernanda Ribeiro', 'Largo J, 707', '(31) 91098-7654', 'fernanda.ribeiro@email.com');
+select * from cliente;
 
 
 create table conta (
@@ -104,4 +107,68 @@ where co.tipo_conta like '%Sala%'
 order by c.nome asc;
 
 
-select * from cliente
+select * from cliente;
+DELETE FROM CLIENTE WHERE ID = 18;
+
+INSERT INTO cliente(nome,endereco,telefone,email) values ('teste','teste', 'teste', 'teste');
+
+
+/*Criar Metodo (função) no mysql*/
+/*Inverter letras*/
+DELIMITER //
+
+CREATE PROCEDURE reajuste_nome(in valor_parametro varchar(50), in id_cliente int)
+BEGIN
+
+	UPDATE cliente 
+    SET nome = reverse(nome)
+    WHERE id = id_cliente;
+    
+    SELECT * FROM cliente WHERE id = id_cliente;
+END
+// DELIMITER ;
+drop procedure if exists reajuste_nome;
+CALL reajuste_nome('parametro_exemplo', 1);
+select * from cliente;
+
+
+/*Nome maiusculo*/
+
+DELIMITER //
+
+CREATE PROCEDURE reajuste_NOME(in valor_parametro varchar(50), in id_cliente int)
+BEGIN
+
+	UPDATE cliente 
+    SET nome =  upper(nome)
+    WHERE id = id_cliente;
+    
+    select * from cliente where id = id_cliente;
+
+END
+// DELIMITER ;
+drop procedure if exists reajuste_NOME;
+call reajuste_NOME('parametro_exemplo', 1);
+select * from cliente;
+
+
+/*Arrumar nome*/
+DELIMITER //
+
+CREATE PROCEDURE ajuste_nome(in valor_parametro varchar(50), in id_cliente int)
+BEGIN
+
+	UPDATE cliente 
+    SET nome = valor_parametro
+    WHERE id = id_cliente;
+    
+    select * from cliente where id = id_cliente;
+
+END
+// DELIMITER ;
+
+set @total = 0.0;
+select @total := sum(valor) 
+from transacao;
+
+select @total as total;
